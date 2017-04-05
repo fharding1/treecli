@@ -125,7 +125,6 @@ func (ct *TreeCLI) searchTree(path ...string) (*Node, string, error) {
     } else if _, ok := cur.children[v]; ok == true {
       cur = cur.children[v]
     } else {
-      fmt.Println(i, v, path)
       return nil, "", fmt.Errorf("error: does not contain node %s where path does", v)
     }
   }
