@@ -13,6 +13,8 @@ import (
 func main() {
 
   // !!!! ERROR HANDLING HAS BEEN OMMITED. PLEASE DEAL w/ ERRORS PROPERLY !!!!
+  // !!!! CERTAIN ERRRORS CAN BE OMMITED, BUT ONLY IF THEY WILL NOT FAIL  ....`
+  // !!!! (like in the AddCommand)
   // !!!! READ THE ACTUAL GO DOC !!!!
 
   a := ct.NewTree(func() {
