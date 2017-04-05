@@ -6,7 +6,7 @@ package main
 
 import (
   "fmt"
-  ct "gitlab.com/fharding/goglcli/clitree"
+  ct "gitlab.com/fharding/clitree"
   "os"
 )
 
