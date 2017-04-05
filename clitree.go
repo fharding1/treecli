@@ -5,13 +5,20 @@ import (
 )
 
 // CLITree ...
-// Root tree for commands.
+// Root tree for your command tree.
+// Simply holds a root node for all
+// to stem off of.
 type CLITree struct {
   root *Node
 }
 
 // Node ...
-// Holds a command node.
+// Holds a command node with a function
+// that is returned when looking up a path,
+// and children nodes that are children of that
+// path. For example if this is path "auth",
+// children might be ["token", "user"] for the
+// total path "auth token" or "auth user".
 type Node struct {
   f        func()
   children map[string]*Node
@@ -26,7 +33,9 @@ func NewTree(f func()) *CLITree {
 }
 
 // AddCommand ...
-// Adds a command to the CLI tree.
+// Adds a command node to the CLI tree. Given
+// a function to associate w/ the specified
+// path.
 func (ct *CLITree) AddCommand(f func(), path ...string) error {
   cur := ct.root
   for i, v := range path {
@@ -42,7 +51,8 @@ func (ct *CLITree) AddCommand(f func(), path ...string) error {
 }
 
 // RemoveCommand ...
-// Removes a command from the CLI tree.
+// Removes a command from the CLI tree. Given
+// the path to that command node.
 func (ct *CLITree) RemoveCommand(path ...string) error {
   n, k, err := ct.searchTree(path...)
   if err != nil {
@@ -53,7 +63,7 @@ func (ct *CLITree) RemoveCommand(path ...string) error {
 }
 
 // Print ...
-// Kinda pretty prints the CLI tree.
+// Kinda pretty prints the CLI tree recursively.
 func (ct *CLITree) Print() {
   var printChildren func(*Node, int)
   printChildren = func(n *Node, indent int) {
