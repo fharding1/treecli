@@ -1,38 +1,5 @@
-use 'godoc cmd/gitlab.com/fharding/goglcli/clitree' for documentation on the gitlab.com/fharding/goglcli/clitree command 
+package treecli // import "gitlab.com/fharding/treecli"
 
-PACKAGE DOCUMENTATION
-
-package clitree
-    import "gitlab.com/fharding/goglcli/clitree"
-
-
-TYPES
-
-type CLITree struct {
-    // contains filtered or unexported fields
-}
-    CLITree ... Root tree for commands.
-
-func NewTree(f func()) *CLITree
-    NewTree ... Creates a new tree. The given func should be the function to
-    give if no params are given. (help)
-
-func (ct *CLITree) AddCommand(f func(), path ...string) error
-    AddCommand ... Adds a command to the CLI tree.
-
-func (ct *CLITree) Parse(path ...string) (func(), error)
-    Parse ... Parses a path (variadic strings) and returns the function
-    present from that path.
-
-func (ct *CLITree) Print()
-    Print ... Kinda pretty prints the CLI tree.
-
-func (ct *CLITree) RemoveCommand(path ...string) error
-    RemoveCommand ... Removes a command from the CLI tree.
-
-type Node struct {
-    // contains filtered or unexported fields
-}
-    Node ... Holds a command node.
-
-
+type Node struct { ... }
+type TreeCLI struct { ... }
+    func NewTree(f func()) *TreeCLI
