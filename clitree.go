@@ -39,8 +39,30 @@ func NewTree(f func()) *CLITree {
 func (ct *CLITree) AddCommand(f func(), path ...string) error {
   cur := ct.root
   for i, v := range path {
-    if i == len(path)-1 && cur.children[v] == nil {
+    if v == "*" && i != len(path)-1 {
+      return fmt.Errorf("error: wildcards cannot have children")
+    } else if i == len(path)-1 && cur.children[v] == nil {
       cur.children[v] = &Node{f, make(map[string]*Node)}
+    } else if _, ok := cur.children[v]; ok == true {
+      cur = cur.children[v]
+    } else {
+      return fmt.Errorf("error: does not contain node %s in path at position %d of %d", v, i, len(path)-1)
+    }
+  }
+  return nil
+}
+
+// SimpleMessage ...
+// This is a helper function for making a command
+// node that simply says a message, for example for
+// help messages.
+func (ct *CLITree) SimpleMessage(msg string, path ...string) error {
+  cur := ct.root
+  for i, v := range path {
+    if i == len(path)-1 && cur.children[v] == nil {
+      cur.children[v] = &Node{func() {
+        fmt.Println(msg)
+      }, make(map[string]*Node)}
     } else if _, ok := cur.children[v]; ok == true {
       cur = cur.children[v]
     } else {
@@ -92,7 +114,9 @@ func (ct *CLITree) Parse(path ...string) (func(), error) {
 func (ct *CLITree) searchTree(path ...string) (*Node, string, error) {
   cur := ct.root
   for i, v := range path {
-    if i == len(path)-1 && cur.children[v] != nil {
+    if cur.children["*"] != nil {
+      return cur, "*", nil
+    } else if i == len(path)-1 && cur.children[v] != nil {
       return cur, v, nil
     } else if i == len(path)-1 && cur.children[v] == nil {
       return nil, "", fmt.Errorf("error: that node does not exist")
