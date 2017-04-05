@@ -1,14 +1,14 @@
-package clitree
+package treecli
 
 import (
   "fmt"
 )
 
-// CLITree ...
+// TreeCLI ...
 // Root tree for your command tree.
 // Simply holds a root node for all
 // to stem off of.
-type CLITree struct {
+type TreeCLI struct {
   root *Node
 }
 
@@ -28,15 +28,15 @@ type Node struct {
 // Creates a new tree. The given func
 // should be the function to give if no params
 // are given. (help)
-func NewTree(f func()) *CLITree {
-  return &CLITree{&Node{f, make(map[string]*Node)}}
+func NewTree(f func()) *TreeCLI {
+  return &TreeCLI{&Node{f, make(map[string]*Node)}}
 }
 
 // AddCommand ...
 // Adds a command node to the CLI tree. Given
 // a function to associate w/ the specified
 // path.
-func (ct *CLITree) AddCommand(f func(), path ...string) error {
+func (ct *TreeCLI) AddCommand(f func(), path ...string) error {
   cur := ct.root
   for i, v := range path {
     if v == "*" && i != len(path)-1 {
@@ -56,10 +56,12 @@ func (ct *CLITree) AddCommand(f func(), path ...string) error {
 // This is a helper function for making a command
 // node that simply says a message, for example for
 // help messages.
-func (ct *CLITree) SimpleMessage(msg string, path ...string) error {
+func (ct *TreeCLI) SimpleMessage(msg string, path ...string) error {
   cur := ct.root
   for i, v := range path {
-    if i == len(path)-1 && cur.children[v] == nil {
+    if v == "*" && i != len(path)-1 {
+      return fmt.Errorf("error: wildcards cannot have children")
+    } else if i == len(path)-1 && cur.children[v] == nil {
       cur.children[v] = &Node{func() {
         fmt.Println(msg)
       }, make(map[string]*Node)}
@@ -75,7 +77,7 @@ func (ct *CLITree) SimpleMessage(msg string, path ...string) error {
 // RemoveCommand ...
 // Removes a command from the CLI tree. Given
 // the path to that command node.
-func (ct *CLITree) RemoveCommand(path ...string) error {
+func (ct *TreeCLI) RemoveCommand(path ...string) error {
   n, k, err := ct.searchTree(path...)
   if err != nil {
     return err
@@ -86,7 +88,7 @@ func (ct *CLITree) RemoveCommand(path ...string) error {
 
 // Print ...
 // Kinda pretty prints the CLI tree recursively.
-func (ct *CLITree) Print() {
+func (ct *TreeCLI) Print() {
   var printChildren func(*Node, int)
   printChildren = func(n *Node, indent int) {
     for k, v := range n.children {
@@ -100,7 +102,7 @@ func (ct *CLITree) Print() {
 // Parse ...
 // Parses a path (variadic strings) and returns
 // the function present from that path.
-func (ct *CLITree) Parse(path ...string) (func(), error) {
+func (ct *TreeCLI) Parse(path ...string) (func(), error) {
   if len(path) == 0 {
     return ct.root.f, nil
   }
@@ -111,7 +113,7 @@ func (ct *CLITree) Parse(path ...string) (func(), error) {
   return n.children[k].f, nil
 }
 
-func (ct *CLITree) searchTree(path ...string) (*Node, string, error) {
+func (ct *TreeCLI) searchTree(path ...string) (*Node, string, error) {
   cur := ct.root
   for i, v := range path {
     if cur.children["*"] != nil {
