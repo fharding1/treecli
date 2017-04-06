@@ -88,15 +88,16 @@ func (ct *TreeCLI) RemoveCommand(path ...string) error {
 
 // Print ...
 // Kinda pretty prints the CLI tree recursively.
-func (ct *TreeCLI) Print() {
+func (ct *TreeCLI) Print() (str string) {
   var printChildren func(*Node, int)
   printChildren = func(n *Node, indent int) {
     for k, v := range n.children {
-      fmt.Printf("%*s%s\n", indent, "", k)
+      str += fmt.Sprintf("%*s%s\n", indent, "", k)
       printChildren(v, indent+2)
     }
   }
   printChildren(ct.root, 0)
+  return str
 }
 
 // Parse ...
