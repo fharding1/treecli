@@ -1,5 +1,0 @@
-package treecli // import "gitlab.com/fharding/treecli"
-
-type Node struct { ... }
-type TreeCLI struct { ... }
-    func NewTree(f func()) *TreeCLI
